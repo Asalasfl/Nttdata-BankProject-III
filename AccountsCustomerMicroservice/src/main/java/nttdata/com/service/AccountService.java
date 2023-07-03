@@ -9,7 +9,9 @@ import reactor.core.publisher.Mono;
 
 public interface AccountService {
     Mono<AccountDTO> getAccountById(String id);
-    Mono<AccountDTO> createAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO);
+    Mono<AccountDTO> createSavingAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO);
+    Mono<AccountDTO> createCurrentAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO);
+    Mono<AccountDTO> createFixedTermAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO);
     Mono<AccountDTO> updateAccount(String id, AccountDTO accountDTO,CreditCardDTO creditCardDTO);
     Mono<AccountDTO> addTransaction(String accountId, TransactionDTO transactionDTO, CreditCard creditCard);
 

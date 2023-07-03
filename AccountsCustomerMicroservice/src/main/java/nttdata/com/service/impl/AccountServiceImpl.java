@@ -28,13 +28,85 @@ public class AccountServiceImpl implements AccountService {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Mono<AccountDTO> createAccount(AccountDTO accountDTO,CreditCardDTO creditCardDTO) {
+    public Mono<AccountDTO> createSavingAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO) {
         Account account = AccountConverter.accountDTOToAccount(accountDTO);
+
+        if (accountDTO.getType().equalsIgnoreCase("saving")) {
+            account.setCommissionFree(true);
+            account.setLimitMovement(true);
+            account.setMaxMonthlyMovements(5);
+        }
 
         List<Transaction> transactions = new ArrayList<>();
         if (accountDTO.getTransactions() != null) {
             for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
-                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO,creditCardDTO,accountDTO);
+                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
+                transactions.add(transaction);
+            }
+        }
+        account.setTransactionReferences(transactions);
+
+        Mono<Account> saveAccountMono = accountRepository.save(account);
+
+        Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
+                .flatMap(transactionRepository::save);
+
+        return saveAccountMono
+                .thenMany(saveTransactionsFlux)
+                .collectList()
+                .map(savedTransactions -> {
+                    account.setTransactionReferences(savedTransactions);
+                    return account;
+                })
+                .map(AccountConverter::accountToAccountDTO);
+    }
+    @Override
+    public Mono<AccountDTO> createFixedTermAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO) {
+        Account account = AccountConverter.accountDTOToAccount(accountDTO);
+
+        if (accountDTO.getType().equalsIgnoreCase("FixedTerm")) {
+            account.setCommissionFree(false);
+            account.setLimitMovement(true);
+            account.setMaxMonthlyMovements(1);
+        }
+
+        List<Transaction> transactions = new ArrayList<>();
+        if (accountDTO.getTransactions() != null) {
+            for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
+                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
+                transactions.add(transaction);
+            }
+        }
+        account.setTransactionReferences(transactions);
+
+        Mono<Account> saveAccountMono = accountRepository.save(account);
+
+        Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
+                .flatMap(transactionRepository::save);
+
+        return saveAccountMono
+                .thenMany(saveTransactionsFlux)
+                .collectList()
+                .map(savedTransactions -> {
+                    account.setTransactionReferences(savedTransactions);
+                    return account;
+                })
+                .map(AccountConverter::accountToAccountDTO);
+    }
+    @Override
+    public Mono<AccountDTO> createCurrentAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO) {
+        Account account = AccountConverter.accountDTOToAccount(accountDTO);
+
+        if (accountDTO.getType().equalsIgnoreCase("CURRENT")) {
+            account.setCommissionFree(true);
+            account.setLimitMovement(false);
+            account.setMaxMonthlyMovements(Integer.MAX_VALUE);
+        }
+
+        List<Transaction> transactions = new ArrayList<>();
+        if (accountDTO.getTransactions() != null) {
+            for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
+                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
                 transactions.add(transaction);
             }
         }

@@ -19,6 +19,9 @@ public class AccountDTO {
     private String type;
     private BigDecimal balance;
     private List<TransactionDTO> transactions;
+    private boolean commissionFree;
+    private boolean limitMovement;
+    private Integer maxMonthlyMovements;
     private String messageDto;
     public AccountDTO(String messageDto){this.setMessageDto(messageDto);}
 }

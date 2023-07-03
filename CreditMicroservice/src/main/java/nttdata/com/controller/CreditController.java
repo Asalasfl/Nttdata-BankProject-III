@@ -18,7 +18,6 @@ import java.net.URI;
 public class CreditController {
     private final CreditServiceImpl creditServiceImpl;
 
-
     @PostMapping(value = "/credits",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Mono<ResponseEntity<CreditDTO>> createCredit(@RequestBody CreditDTO creditDTO) {
         return creditServiceImpl.createCredit(creditDTO)

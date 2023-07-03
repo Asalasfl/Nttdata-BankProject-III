@@ -30,6 +30,9 @@ public class Account {
     private Customer customerId;
     private String type;
     private BigDecimal balance;
+    private boolean commissionFree;
+    private boolean limitMovement;
+    private Integer maxMonthlyMovements;
     @Field("transactionReferences")
     @DBRef
     private List<Transaction> transactionReferences;
