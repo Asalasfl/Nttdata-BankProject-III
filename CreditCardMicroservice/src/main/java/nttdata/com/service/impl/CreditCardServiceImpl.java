@@ -74,7 +74,6 @@ public class CreditCardServiceImpl implements CreditCardService {
                     return creditCardRepository.save(creditCard)
                             .map(CreditCardConverter::creditCardToDTO);
                 });
-
     }
 
     @Override
@@ -82,5 +81,4 @@ public class CreditCardServiceImpl implements CreditCardService {
         return transactionRepository.findByCreditCardId(creditCardId)
                 .map(TransactionConverter::transactionToTransactionDTO);
     }
-
 }

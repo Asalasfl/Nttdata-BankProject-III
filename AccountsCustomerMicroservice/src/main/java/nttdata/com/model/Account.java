@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -32,4 +33,5 @@ public class Account {
     @Field("transactionReferences")
     @DBRef
     private List<Transaction> transactionReferences;
+
 }

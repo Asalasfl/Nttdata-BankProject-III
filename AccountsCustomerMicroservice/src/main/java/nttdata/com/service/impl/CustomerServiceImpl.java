@@ -1,29 +1,22 @@
 package nttdata.com.service.impl;
 
 import lombok.AllArgsConstructor;
-import nttdata.com.dto.AccountDTO;
-import nttdata.com.dto.CreditCardDTO;
-import nttdata.com.dto.CreditDTO;
-import nttdata.com.dto.CustomerDTO;
+import nttdata.com.dto.*;
 import nttdata.com.client.feign.CreditCardClient;
 import nttdata.com.client.feign.CreditClient;
-import nttdata.com.model.Account;
-import nttdata.com.model.Credit;
-import nttdata.com.model.CreditCard;
-import nttdata.com.model.Customer;
+import nttdata.com.model.*;
 import nttdata.com.repository.AccountRepository;
 import nttdata.com.repository.CustomerRepository;
 import nttdata.com.service.CustomerService;
-import nttdata.com.utils.AccountConverter;
-import nttdata.com.utils.CreditCardConverter;
-import nttdata.com.utils.CreditConverter;
-import nttdata.com.utils.CustomerConverter;
+import nttdata.com.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -39,8 +32,36 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Mono<CustomerDTO> createCustomer(CustomerDTO customerDTO) {
         Customer customer = CustomerConverter.customerDTOToCustomer(customerDTO);
-        return customerRepository.save(customer)
+        List<Account> accounts = new ArrayList<>();
+        if (customerDTO.getAccounts() != null) {
+            for (AccountDTO accountDTO : customerDTO.getAccounts()) {
+                Account account = AccountConverter.accountDTOToAccount(accountDTO);
+                if (account.getId() == null) {
+                    // Asignar un ID válido a la cuenta
+                    account.setId(generateAccountId());
+                }
+                accounts.add(account);
+            }
+        }
+        customer.setAccountReferences(accounts);
+
+        Mono<Customer> saveCustomerMono = customerRepository.save(customer);
+
+        Flux<Account> saveAccountsFlux = Flux.fromIterable(accounts)
+                .flatMap(accountRepository::save);
+
+        return saveCustomerMono
+                .thenMany(saveAccountsFlux)
+                .collectList()
+                .map(savedAccounts -> {
+                    customer.setAccountReferences(savedAccounts);
+                    return customer;
+                })
                 .map(CustomerConverter::customerToCustomerDTO);
+    }
+
+    private String generateAccountId() {
+        return UUID.randomUUID().toString();
     }
 
     @Override
