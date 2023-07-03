@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="BankProject-micro-customerAccount" />
+        <module name="BankProject-micro-CreditCard" />
+        <module name="BankProject-micro-credit" />
+        <module name="discovery-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="BankProject-micro-credit" target="11" />
+      <module name="BankProject-micro-CreditCard" target="11" />
+      <module name="BankProject-micro-customerAccount" target="11" />
+      <module name="discovery-service" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="BankProject-micro-CreditCard" options="-parameters" />
+      <module name="BankProject-micro-credit" options="-parameters" />
+      <module name="BankProject-micro-customerAccount" options="-parameters" />
+      <module name="discovery-service" options="-parameters" />
+    </option>
+  </component>
+</project>
