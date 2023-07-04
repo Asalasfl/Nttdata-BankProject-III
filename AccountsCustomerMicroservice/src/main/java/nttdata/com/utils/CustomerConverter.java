@@ -57,9 +57,11 @@ public class    CustomerConverter {
         entity.setId(dto.getIdCustomer());
         entity.setName(dto.getName());
         entity.setType(dto.getType());
-
-        // No se realiza la conversión de Flux<String> a List<String> porque en Customer no se utiliza una lista directamente
-
+        if (dto.getType().equalsIgnoreCase("personal")) {
+            entity.setMaxCredits(1);
+        } else if (dto.getType().equalsIgnoreCase("empresarial")) {
+            entity.setMaxCredits(Integer.MAX_VALUE); // Cliente empresarial puede tener múltiples créditos
+        }
         return entity;
     }
 }

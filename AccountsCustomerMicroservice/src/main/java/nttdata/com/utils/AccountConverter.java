@@ -32,17 +32,33 @@ public class AccountConverter {
     }
 
     public static Account accountDTOToAccount(AccountDTO dto) {
-
         if (dto == null) {
             throw new IllegalArgumentException("AccountDTO cannot be null");
         }
+
         Account entity = new Account();
         entity.setId(dto.getIdAccount());
         entity.setType(dto.getType());
         entity.setBalance(dto.getBalance());
-        entity.setCommissionFree(dto.isCommissionFree());
-        entity.setLimitMovement(dto.isLimitMovement());
-        entity.setMaxMonthlyMovements(dto.getMaxMonthlyMovements());
+
+        if (dto.getType().equalsIgnoreCase("saving")) {
+            entity.setCommissionFree(true);
+            entity.setLimitMovement(true);
+            entity.setMaxMonthlyMovements(5);
+        }
+        else if (dto.getType().equalsIgnoreCase("FixedTerm")) {
+            entity.setCommissionFree(false);
+            entity.setLimitMovement(true);
+            entity.setMaxMonthlyMovements(1);
+        }
+        else if (dto.getType().equalsIgnoreCase("CURRENT")) {
+            entity.setCommissionFree(true);
+            entity.setLimitMovement(false);
+            entity.setMaxMonthlyMovements(Integer.MAX_VALUE);
+        }
+        else {
+            throw new IllegalArgumentException("Type account is not correct(saving,current,fixedterm");
+        }
 
         return entity;
     }

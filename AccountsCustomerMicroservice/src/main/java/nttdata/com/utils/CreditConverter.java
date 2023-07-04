@@ -15,6 +15,7 @@ public class CreditConverter {
     public static CreditDTO creditToDTO(Credit entity) {
         CreditDTO dto = new CreditDTO();
         dto.setIdCredit(entity.getId());
+        dto.setType(entity.getType());
         dto.setAmount(entity.getAmount());
         dto.setInterestRate(entity.getInterestRate());
         dto.setRemainingAmount(entity.getRemainingAmount());
@@ -34,6 +35,7 @@ public class CreditConverter {
     public static Credit DTOToCredit(CreditDTO dto) {
         Credit entity = new Credit();
         entity.setId(dto.getIdCredit());
+        entity.setType(dto.getType());
         entity.setAmount(dto.getAmount());
         entity.setInterestRate(dto.getInterestRate());
         entity.setRemainingAmount(dto.getRemainingAmount());

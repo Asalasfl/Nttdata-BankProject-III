@@ -18,11 +18,6 @@ import reactor.core.publisher.Mono;
 public class AccountController {
     private final AccountServiceImpl accountServiceImpl;
 
-    @PostMapping(value = "/createAccount", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<AccountDTO> createAccount(@RequestBody CreateAccountRequest createAccountRequest) {
-        return accountServiceImpl.createSavingAccount(createAccountRequest.getAccountDTO(),createAccountRequest.getCreditCardDTO());
-    }
-
     @GetMapping(value= "/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Mono<AccountDTO> getAccountById(@PathVariable String id) {
         return accountServiceImpl.getAccountById(id);

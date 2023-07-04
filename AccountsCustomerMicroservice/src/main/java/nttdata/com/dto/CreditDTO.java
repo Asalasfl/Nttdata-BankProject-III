@@ -14,6 +14,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreditDTO {
     private String idCredit;
+    private String idCustomer;
+    private String type;
     private BigDecimal amount;
     private BigDecimal interestRate;
     private BigDecimal remainingAmount;

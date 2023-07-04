@@ -19,7 +19,8 @@ public class Customer {
     @Id
     private String id;
     private String name;
-    private String type; // "PERSONAL" or "BUSINESS"
+    private String type;
+    private Integer maxCredits;
     @Field("accountReferences")
     @DBRef
     private List<Account> accountReferences;

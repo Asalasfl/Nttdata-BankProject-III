@@ -40,6 +40,12 @@ public class CustomerServiceImpl implements CustomerService {
                     // Asignar un ID válido a la cuenta
                     account.setId(generateAccountId());
                 }
+                if (accountDTO.getType().equalsIgnoreCase("saving")) {
+                    // Aplicar las restricciones para la cuenta de tipo "saving"
+                    account.setCommissionFree(true);
+                    account.setLimitMovement(true);
+                    account.setMaxMonthlyMovements(5);
+                }
                 accounts.add(account);
             }
         }
@@ -59,6 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
                 })
                 .map(CustomerConverter::customerToCustomerDTO);
     }
+
 
     private String generateAccountId() {
         UUID uuid = UUID.randomUUID();
