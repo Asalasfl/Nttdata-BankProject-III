@@ -2,6 +2,7 @@ package nttdata.com.controller;
 
 import lombok.AllArgsConstructor;
 import nttdata.com.dto.AccountDTO;
+import nttdata.com.dto.CreateAccountRequest;
 import nttdata.com.dto.CreditCardDTO;
 import nttdata.com.dto.TransactionDTO;
 import nttdata.com.model.CreditCard;
@@ -18,8 +19,8 @@ public class AccountController {
     private final AccountServiceImpl accountServiceImpl;
 
     @PostMapping(value = "/createAccount", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO,@RequestBody CreditCardDTO creditCardDTO) {
-        return accountServiceImpl.createAccount(accountDTO,creditCardDTO);
+    public Mono<AccountDTO> createAccount(@RequestBody CreateAccountRequest createAccountRequest) {
+        return accountServiceImpl.createSavingAccount(createAccountRequest.getAccountDTO(),createAccountRequest.getCreditCardDTO());
     }
 
     @GetMapping(value= "/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

@@ -15,4 +15,7 @@ public interface CreditCardClient {
 
     @GetMapping("/api/credit-cards/credits-card")
     public Mono<CreditCardDTO> createCreditCard(@RequestBody CreditCardDTO creditCardDTO);
+
+    @GetMapping("/api/credit-cards/{id}")
+    Mono<CreditCardDTO> findByCreditCardId(@RequestBody String creditCardId);
 }

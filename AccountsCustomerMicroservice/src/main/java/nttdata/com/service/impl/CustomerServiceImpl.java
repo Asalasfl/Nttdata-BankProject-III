@@ -61,7 +61,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private String generateAccountId() {
-        return UUID.randomUUID().toString();
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 
     @Override

@@ -18,7 +18,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -31,35 +33,36 @@ public class AccountServiceImpl implements AccountService {
     public Mono<AccountDTO> createSavingAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO) {
         Account account = AccountConverter.accountDTOToAccount(accountDTO);
 
-        if (accountDTO.getType().equalsIgnoreCase("saving")) {
-            account.setCommissionFree(true);
-            account.setLimitMovement(true);
-            account.setMaxMonthlyMovements(5);
-        }
-
-        List<Transaction> transactions = new ArrayList<>();
-        if (accountDTO.getTransactions() != null) {
-            for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
-                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
-                transactions.add(transaction);
-            }
-        }
-        account.setTransactionReferences(transactions);
-
-        Mono<Account> saveAccountMono = accountRepository.save(account);
-
-        Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
-                .flatMap(transactionRepository::save);
-
-        return saveAccountMono
-                .thenMany(saveTransactionsFlux)
-                .collectList()
-                .map(savedTransactions -> {
-                    account.setTransactionReferences(savedTransactions);
-                    return account;
+        Mono<AccountDTO> resultMono = Mono.just(accountDTO)
+                .filter(dto -> dto.getType().equalsIgnoreCase("saving"))
+                .map(dto -> {
+                    account.setCommissionFree(true);
+                    account.setLimitMovement(true);
+                    account.setMaxMonthlyMovements(5);
+                    return dto;
                 })
-                .map(AccountConverter::accountToAccountDTO);
+                .flatMap(dto -> {
+                    List<Transaction> transactions = new ArrayList<>();
+                    if (dto.getTransactions() != null) {
+                        return Flux.fromIterable(dto.getTransactions())
+                                .flatMap(transactionDTO -> {
+                                    Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
+                                    transactions.add(transaction);
+                                    return transactionRepository.save(transaction);
+                                })
+                                .collectList()
+                                .doOnSuccess(savedTransactions -> account.setTransactionReferences(savedTransactions));
+                    } else {
+                        return Mono.just(Collections.emptyList());
+                    }
+                })
+                .then(accountRepository.save(account))
+                .flatMap(savedAccount -> Mono.just(AccountConverter.accountToAccountDTO(savedAccount)));
+
+        return resultMono;
     }
+
+
     @Override
     public Mono<AccountDTO> createFixedTermAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO) {
         Account account = AccountConverter.accountDTOToAccount(accountDTO);
@@ -68,30 +71,32 @@ public class AccountServiceImpl implements AccountService {
             account.setCommissionFree(false);
             account.setLimitMovement(true);
             account.setMaxMonthlyMovements(1);
-        }
 
-        List<Transaction> transactions = new ArrayList<>();
-        if (accountDTO.getTransactions() != null) {
-            for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
-                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
-                transactions.add(transaction);
+            List<Transaction> transactions = new ArrayList<>();
+            if (accountDTO.getTransactions() != null) {
+                for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
+                    Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
+                    transactions.add(transaction);
+                }
             }
-        }
-        account.setTransactionReferences(transactions);
+            account.setTransactionReferences(transactions);
 
-        Mono<Account> saveAccountMono = accountRepository.save(account);
+            Mono<Account> saveAccountMono = accountRepository.save(account);
 
-        Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
-                .flatMap(transactionRepository::save);
+            Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
+                    .flatMap(transactionRepository::save);
 
-        return saveAccountMono
-                .thenMany(saveTransactionsFlux)
-                .collectList()
-                .map(savedTransactions -> {
-                    account.setTransactionReferences(savedTransactions);
-                    return account;
-                })
-                .map(AccountConverter::accountToAccountDTO);
+            return saveAccountMono
+                    .thenMany(saveTransactionsFlux)
+                    .collectList()
+                    .map(savedTransactions -> {
+                        account.setTransactionReferences(savedTransactions);
+                        return account;
+                    })
+                    .map(AccountConverter::accountToAccountDTO);
+        }else {
+                return Mono.error(new IllegalArgumentException("Type off invalid account "));
+            }
     }
     @Override
     public Mono<AccountDTO> createCurrentAccount(AccountDTO accountDTO, CreditCardDTO creditCardDTO) {
@@ -101,30 +106,32 @@ public class AccountServiceImpl implements AccountService {
             account.setCommissionFree(true);
             account.setLimitMovement(false);
             account.setMaxMonthlyMovements(Integer.MAX_VALUE);
-        }
 
-        List<Transaction> transactions = new ArrayList<>();
-        if (accountDTO.getTransactions() != null) {
-            for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
-                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
-                transactions.add(transaction);
+            List<Transaction> transactions = new ArrayList<>();
+            if (accountDTO.getTransactions() != null) {
+                for (TransactionDTO transactionDTO : accountDTO.getTransactions()) {
+                    Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO, accountDTO);
+                    transactions.add(transaction);
+                }
             }
-        }
-        account.setTransactionReferences(transactions);
+            account.setTransactionReferences(transactions);
 
-        Mono<Account> saveAccountMono = accountRepository.save(account);
+            Mono<Account> saveAccountMono = accountRepository.save(account);
 
-        Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
-                .flatMap(transactionRepository::save);
+            Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
+                    .flatMap(transactionRepository::save);
 
-        return saveAccountMono
-                .thenMany(saveTransactionsFlux)
-                .collectList()
-                .map(savedTransactions -> {
-                    account.setTransactionReferences(savedTransactions);
-                    return account;
-                })
-                .map(AccountConverter::accountToAccountDTO);
+            return saveAccountMono
+                    .thenMany(saveTransactionsFlux)
+                    .collectList()
+                    .map(savedTransactions -> {
+                        account.setTransactionReferences(savedTransactions);
+                        return account;
+                    })
+                    .map(AccountConverter::accountToAccountDTO);
+        }else {
+                return Mono.error(new IllegalArgumentException("Type off invalid account "));
+            }
     }
     @Override
     public Mono<AccountDTO> getAccountById(String id) {
