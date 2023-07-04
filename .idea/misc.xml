@@ -7,6 +7,8 @@
         <option value="$PROJECT_DIR$/CreditMicroservice/pom.xml" />
         <option value="$PROJECT_DIR$/CreditCardMicroservice/pom.xml" />
         <option value="$PROJECT_DIR$/AccountsCustomerMicroservice/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/config-server/pom.xml" />
       </list>
     </option>
   </component>

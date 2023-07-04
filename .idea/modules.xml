@@ -6,6 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/CreditMicroservice/BankProject-micro-credit.iml" filepath="$PROJECT_DIR$/CreditMicroservice/BankProject-micro-credit.iml" />
       <module fileurl="file://$PROJECT_DIR$/AccountsCustomerMicroservice/BankProject-micro-customerAccount.iml" filepath="$PROJECT_DIR$/AccountsCustomerMicroservice/BankProject-micro-customerAccount.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Nttdata-BankProject-III.iml" filepath="$PROJECT_DIR$/.idea/Nttdata-BankProject-III.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api-gateway/api-gateway.iml" filepath="$PROJECT_DIR$/api-gateway/api-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/config-server/config-server.iml" filepath="$PROJECT_DIR$/config-server/config-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/discovery-service/discovery-service.iml" filepath="$PROJECT_DIR$/discovery-service/discovery-service.iml" />
     </modules>
   </component>

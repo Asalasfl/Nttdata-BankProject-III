@@ -2,7 +2,6 @@ package nttdata.com.controller;
 
 import lombok.AllArgsConstructor;
 import nttdata.com.dto.AccountDTO;
-import nttdata.com.dto.CreateAccountRequest;
 import nttdata.com.dto.CreditCardDTO;
 import nttdata.com.dto.TransactionDTO;
 import nttdata.com.model.CreditCard;

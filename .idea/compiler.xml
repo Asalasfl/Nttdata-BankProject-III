@@ -7,6 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
+        <module name="config-server" />
         <module name="BankProject-micro-customerAccount" />
         <module name="BankProject-micro-CreditCard" />
         <module name="BankProject-micro-credit" />
@@ -14,9 +16,11 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="api-gateway" target="11" />
       <module name="BankProject-micro-credit" target="11" />
       <module name="BankProject-micro-CreditCard" target="11" />
       <module name="BankProject-micro-customerAccount" target="11" />
+      <module name="config-server" target="11" />
       <module name="discovery-service" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -25,6 +29,8 @@
       <module name="BankProject-micro-CreditCard" options="-parameters" />
       <module name="BankProject-micro-credit" options="-parameters" />
       <module name="BankProject-micro-customerAccount" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
     </option>
   </component>

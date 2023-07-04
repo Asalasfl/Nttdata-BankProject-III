@@ -7,6 +7,10 @@
     <file url="file://$PROJECT_DIR$/CreditCardMicroservice/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CreditMicroservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CreditMicroservice/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/api-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/api-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/config-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/config-server/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/discovery-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/discovery-service/src/main/resources" charset="UTF-8" />
   </component>
