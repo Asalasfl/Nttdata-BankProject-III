@@ -22,6 +22,7 @@ public class AccountDTO {
     private boolean commissionFree;
     private boolean limitMovement;
     private Integer maxMonthlyMovements;
+    private BigDecimal minimumOpeningAmount;
     private String messageDto;
     public AccountDTO(String messageDto){this.setMessageDto(messageDto);}
 }

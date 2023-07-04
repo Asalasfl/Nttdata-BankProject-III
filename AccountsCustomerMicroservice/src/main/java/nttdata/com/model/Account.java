@@ -33,6 +33,7 @@ public class Account {
     private boolean commissionFree;
     private boolean limitMovement;
     private Integer maxMonthlyMovements;
+    private BigDecimal getMinimumOpeningAmount;
     @Field("transactionReferences")
     @DBRef
     private List<Transaction> transactionReferences;
