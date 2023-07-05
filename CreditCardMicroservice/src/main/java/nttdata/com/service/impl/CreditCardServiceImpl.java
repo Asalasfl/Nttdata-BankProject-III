@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @AllArgsConstructor
@@ -40,6 +41,11 @@ public class CreditCardServiceImpl implements CreditCardService {
         }
         creditCard.setTransactionReferences(transactions);
 
+        if (creditCard.getId() == null) {
+            // Asignar un ID válido a la tarjeta de crédito
+            creditCard.setId(generateCreditCardId());
+        }
+
         Mono<CreditCard> saveCreditCardMono = creditCardRepository.save(creditCard);
 
         Flux<Transaction> saveTransactionsFlux = Flux.fromIterable(transactions)
@@ -53,6 +59,10 @@ public class CreditCardServiceImpl implements CreditCardService {
                     return creditCard;
                 })
                 .map(CreditCardConverter::creditCardToDTO);
+    }
+    private String generateCreditCardId() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
     @Override
     public Mono<CreditCardDTO> findByCreditCardId(String creditCardId) {

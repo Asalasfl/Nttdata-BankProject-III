@@ -15,7 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,58 +31,41 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Mono<CustomerDTO> createCustomer(CustomerDTO customerDTO) {
-            Customer customer = CustomerConverter.customerDTOToCustomer(customerDTO);
-
-            List<Account> accounts = new ArrayList<>();
-            if (customerDTO.getAccounts() != null) {
-                for (AccountDTO accountDTO : customerDTO.getAccounts()) {
-                    Account account = AccountConverter.accountDTOToAccount(accountDTO);
-                    if (account.getId() == null) {
-                        // Asignar un ID válido a la cuenta
-                        account.setId(generateAccountId());
-                    }
-                    if (accountDTO.getType().equalsIgnoreCase("saving")) {
-                        // Aplicar las restricciones para la cuenta de tipo "saving"
-                        account.setCommissionFree(true);
-                        account.setLimitMovement(true);
-                        account.setMaxMonthlyMovements(5);
-                    }
-                    accounts.add(account);
+        Customer customer = CustomerConverter.customerDTOToCustomer(customerDTO);
+        List<Account> accounts = new ArrayList<>();
+        if (customerDTO.getAccounts() != null) {
+            for (AccountDTO accountDTO : customerDTO.getAccounts()) {
+                Account account = AccountConverter.accountDTOToAccount(accountDTO);
+                if (account.getId() == null) {
+                    // Asignar un ID válido a la cuenta
+                    account.setId(generateAccountId());
                 }
+                if (accountDTO.getType().equalsIgnoreCase("saving")) {
+                    // Aplicar las restricciones para la cuenta de tipo "saving"
+                    account.setCommissionFree(true);
+                    account.setLimitMovement(true);
+                    account.setMaxMonthlyMovements(5);
+                }
+                accounts.add(account);
             }
-            customer.setAccountReferences(accounts);
-
-            Mono<Customer> saveCustomerMono = customerRepository.save(customer);
-
-            Flux<Account> saveAccountsFlux = Flux.fromIterable(accounts)
-                    .flatMap(accountRepository::save);
-
-            // Utilizar el método createCredit del microservicio CreditClient
-            Mono<CreditDTO> createCreditMono = creditClient.createCredit(customerDTO.getCredits().get(0));
-
-            // Utilizar el método createCreditCard del microservicio CreditCardClient
-            Mono<CreditCardDTO> createCreditCardMono = creditCardClient.createCreditCard(customerDTO.getCreditCards().get(0));
-
-            return saveCustomerMono
-                    .thenMany(saveAccountsFlux)
-                    .collectList()
-                    .flatMap(savedAccounts -> {
-                        customer.setAccountReferences(savedAccounts);
-                        return Mono.zip(createCreditMono, createCreditCardMono);
-                    })
-                    .map(tuple -> {
-                        CreditDTO creditDTO = tuple.getT1();
-                        CreditCardDTO creditCardDTO = tuple.getT2();
-
-                        // Actualizar las referencias de crédito y tarjeta de crédito en el cliente
-                        customer.setCreditReferences(Collections.singletonList(CreditConverter.DTOToCredit(creditDTO)));
-                        customer.setCreditCardReferences(Collections.singletonList(CreditCardConverter.DTOToCreditCard(creditCardDTO)));
-
-                        return customer;
-                    })
-                    .flatMap(customerRepository::save)
-                    .map(CustomerConverter::customerToCustomerDTO);
         }
+        customer.setAccountReferences(accounts);
+
+        Mono<Customer> saveCustomerMono = customerRepository.save(customer);
+
+        Flux<Account> saveAccountsFlux = Flux.fromIterable(accounts)
+                .flatMap(accountRepository::save);
+
+        return saveCustomerMono
+                .thenMany(saveAccountsFlux)
+                .collectList()
+                .map(savedAccounts -> {
+                    customer.setAccountReferences(savedAccounts);
+                    return customer;
+                })
+                .map(CustomerConverter::customerToCustomerDTO);
+    }
+
 
     private String generateAccountId() {
         UUID uuid = UUID.randomUUID();

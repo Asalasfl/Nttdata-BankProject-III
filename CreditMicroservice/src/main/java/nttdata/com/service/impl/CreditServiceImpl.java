@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -36,6 +37,11 @@ public class CreditServiceImpl implements CreditService {
         }
         credit.setPaymentReferences(payments);
 
+        if (credit.getId() == null) {
+            // Asignar un ID válido al crédito
+            credit.setId(generateCreditId());
+        }
+
         Mono<Credit> saveCreditMono = creditRepository.save(credit);
 
         Flux<Payment> savePaymentsFlux = Flux.fromIterable(payments)
@@ -51,7 +57,10 @@ public class CreditServiceImpl implements CreditService {
                 .map(CreditConverter::creditToDTO);
     }
 
-
+    private String generateCreditId() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
 
     @Override
     public Mono<CreditDTO> findByCreditId(String creditId) {
