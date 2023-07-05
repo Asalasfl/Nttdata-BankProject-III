@@ -9,3 +9,5 @@ spring:
         enabled: true
       enabled: true
       label: main
+server:
+  port: 8084
