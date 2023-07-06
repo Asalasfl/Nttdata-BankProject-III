@@ -7,7 +7,7 @@ import nttdata.com.model.Payment;
 
 public class PaymentConverter {
 
-    public static PaymentDTO paymentToPaymentDTO(Payment entity, Credit credit) {
+    public static PaymentDTO paymentToPaymentDTO(Payment entity) {
         PaymentDTO dto = new PaymentDTO();
         dto.setIdPayment(entity.getId());
         dto.setAmount(entity.getAmount());
@@ -16,12 +16,11 @@ public class PaymentConverter {
 
         return dto;
     }
-    public static Payment paymentDTOToPayment(PaymentDTO dto, CreditDTO creditDTO) {
+    public static Payment paymentDTOToPayment(PaymentDTO dto) {
         Payment entity = new Payment();
         entity.setId(dto.getIdPayment());
         entity.setAmount(dto.getAmount());
         entity.setTimestamp(dto.getTimestamp());
-        Credit creditEntity = CreditConverter.DTOToCredit(creditDTO);
         entity.setCreditId(dto.getIdCredit());
         return entity;
     }

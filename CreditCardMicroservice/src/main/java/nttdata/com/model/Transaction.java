@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 public class Transaction {
     @Id
     private String id;
-    @DBRef
     private Account idAccount;
-    @DBRef
     private CreditCard creditCardId;
     private String type; // "DEPOSIT" or "WITHDRAWAL"
     private BigDecimal amount;

@@ -27,8 +27,8 @@ import java.util.List;
 public  class Credit {
     @Id
     private String id;
-   // private Customer customerId;
-    private String type;
+    private String customerId;
+    private String type;//personal un creidto, empresarial varios creditos
     private BigDecimal amount;
     private BigDecimal interestRate;
     private BigDecimal remainingAmount;

@@ -28,12 +28,12 @@ public class CreditCardController {
                 .defaultIfEmpty(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
     @GetMapping(value = "/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<CreditCardDTO> findCreditCardById(@PathVariable String id) {
+    public Mono<CreditCardDTO> findCreditCardById(@PathVariable ("id")  String id) {
         return creditCardServiceImpl.findByCreditCardId(id);
     }
 
-    @PostMapping(value = "/{creditCardId}/transactions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<CreditCardDTO> addTransaction(@PathVariable String creditCardId,
+    @PostMapping(value = "/{id}/transactions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Mono<CreditCardDTO> addTransaction(@PathVariable ("id") String creditCardId,
                                               @RequestBody TransactionDTO transactionDTO) {
         return creditCardServiceImpl.addTransaction(creditCardId, transactionDTO);
     }

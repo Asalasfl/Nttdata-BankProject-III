@@ -22,12 +22,9 @@ public class Customer {
     private String name;
     private String type; // "PERSONAL" or "BUSINESS"
     @Field("accountReferences")
-    @DBRef
     private List<Account> accountReferences;
     @Field("creditReferences")
-    @DBRef
     private List<Credit> creditReferences;
     @Field("creditCardReferences")
-    @DBRef
     private List<CreditCard> creditCardReferences;
 }

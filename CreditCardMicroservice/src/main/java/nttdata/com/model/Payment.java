@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class Payment {
     @Id
     private String id;
-    @DBRef
     private Credit creditId;
     private BigDecimal amount;
     private LocalDateTime timestamp;

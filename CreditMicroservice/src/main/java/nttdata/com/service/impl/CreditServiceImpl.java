@@ -1,6 +1,7 @@
 package nttdata.com.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nttdata.com.dto.CreditDTO;
 import nttdata.com.dto.PaymentDTO;
 import nttdata.com.model.Credit;
@@ -14,10 +15,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @AllArgsConstructor
 @Service
 public class CreditServiceImpl implements CreditService {
@@ -31,12 +33,13 @@ public class CreditServiceImpl implements CreditService {
         List<Payment> payments = new ArrayList<>();
         if (creditDTO.getPayments() != null) {
             for (PaymentDTO paymentDTO : creditDTO.getPayments()) {
-                Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO, creditDTO);
+                Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO);
                 payments.add(payment);
             }
         }
         credit.setPaymentReferences(payments);
-
+        credit.setInterestRate(BigDecimal.valueOf(0.005));
+        credit.setRemainingAmount(credit.getInterestRate().multiply(credit.getAmount()));
         Mono<Credit> saveCreditMono = creditRepository.save(credit);
 
         Flux<Payment> savePaymentsFlux = Flux.fromIterable(payments)
@@ -59,42 +62,45 @@ public class CreditServiceImpl implements CreditService {
                 .switchIfEmpty(Mono.just(new CreditDTO("El crédito no existe.")));
     }
     @Override
-    public Mono<CreditDTO> addPayment(String creditId, PaymentDTO paymentDTO) {
-        return creditRepository.findById(creditId)
+    public Mono<CreditDTO> addPayment(String idCredit, PaymentDTO paymentDTO) {
+        return creditRepository.findById(idCredit)
                 .flatMap(credit -> {
-                    credit.setRemainingAmount(credit.getRemainingAmount().subtract(paymentDTO.getAmount()));
+                    if (credit == null) {
+                        return Mono.error(new RuntimeException("El crédito no existe."));
+                    }
 
-                    Payment payment = new Payment();
-                    payment.setId(paymentDTO.getIdPayment());
-                    payment.setAmount(paymentDTO.getAmount());
-                    payment.setTimestamp(paymentDTO.getTimestamp());
-                    payment.setCreditId(paymentDTO.getIdCredit());
+                    BigDecimal remainingAmount = credit.getRemainingAmount();
+                    BigDecimal paymentAmount = paymentDTO.getAmount();
+                    paymentDTO.setIdPayment(credit.getId());
+                    if (remainingAmount.compareTo(paymentAmount) <= 0) {
+                        return Mono.just(new CreditDTO("El monto total ya esta pagado o no coincide con el monto que falta pagar."));
+                    }
+                    credit.setRemainingAmount(remainingAmount.subtract(paymentAmount));
+
+                    Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO);
+                    payment.setCreditId(credit.getId());
 
                     credit.getPaymentReferences().add(payment);
 
                     return creditRepository.save(credit)
                             .map(savedCredit -> {
-                                CreditDTO creditDTO = new CreditDTO();
-                                creditDTO.setIdCredit(savedCredit.getId());
-                                creditDTO.setType(savedCredit.getType());
-                                creditDTO.setAmount(savedCredit.getAmount());
-                                creditDTO.setInterestRate(savedCredit.getInterestRate());
-                                creditDTO.setRemainingAmount(savedCredit.getRemainingAmount());
-                                creditDTO.setPayments(savedCredit.getPaymentReferences().stream()
-                                        .map(payment1 -> PaymentConverter.paymentToPaymentDTO(payment, savedCredit)) // Pasar savedCredit como segundo argumento
-                                        .collect(Collectors.toList()));
+                                CreditDTO creditDTO = CreditConverter.creditToDTO(savedCredit);
+                                log.info("Pago añadido correctamente. ID del crédito: {}, ID del pago: {}",
+                                        savedCredit.getId(), payment.getId());
                                 return creditDTO;
                             });
+                })
+                .onErrorResume(error -> {
+                    log.error("Error al añadir el pago: {}", error.getMessage());
+                    return Mono.error(error);
                 });
     }
 
-
     @Override
     public Flux<PaymentDTO> getPaymentsByCreditId(String creditId) {
-        return paymentRepository.findByCreditId(creditId)
-                .flatMap(payment -> creditRepository.findById(creditId)
-                        .map(credit -> PaymentConverter.paymentToPaymentDTO(payment, credit))); // Pasar credit como segundo argumento
+        return creditRepository.findById(creditId)
+                .flatMapIterable(Credit::getPaymentReferences)
+                .map(payment -> PaymentConverter.paymentToPaymentDTO(payment))
+                .switchIfEmpty(Mono.error(new RuntimeException("El crédito no existe o no tiene pagos.")));
     }
-
-
 }

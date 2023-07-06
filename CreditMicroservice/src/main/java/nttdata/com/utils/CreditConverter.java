@@ -22,12 +22,12 @@ public class CreditConverter {
         dto.setAmount(entity.getAmount());
         dto.setInterestRate(entity.getInterestRate());
         dto.setRemainingAmount(entity.getRemainingAmount());
-        // dto.setIdCustomer(entity.getId());
+        dto.setIdCustomer(entity.getId());
 
         List<PaymentDTO> paymentDTOs = new ArrayList<>();
         if (entity.getPaymentReferences() != null) {
             for (Payment payment : entity.getPaymentReferences()) {
-                PaymentDTO paymentDTO = PaymentConverter.paymentToPaymentDTO(payment, entity);
+                PaymentDTO paymentDTO = PaymentConverter.paymentToPaymentDTO(payment);
                 paymentDTOs.add(paymentDTO);
             }
         }
@@ -41,14 +41,12 @@ public class CreditConverter {
         entity.setId(dto.getIdCredit());
         entity.setType(dto.getType());
         entity.setAmount(dto.getAmount());
-        entity.setInterestRate(dto.getInterestRate());
-        entity.setRemainingAmount(dto.getRemainingAmount());
-        // entity.setCustomerId(dto.getIdCustomer());
+        entity.setCustomerId(dto.getIdCustomer());
 
         List<Payment> paymentReferences = new ArrayList<>();
         if (dto.getPayments() != null) {
             for (PaymentDTO paymentDTO : dto.getPayments()) {
-                Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO, dto);
+                Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO);
                 paymentReferences.add(payment);
             }
         }

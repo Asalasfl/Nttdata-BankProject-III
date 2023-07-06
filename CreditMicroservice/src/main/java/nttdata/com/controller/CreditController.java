@@ -29,13 +29,13 @@ public class CreditController {
     public Mono<CreditDTO> findCreditById(@PathVariable("id") String creditId) {
         return creditServiceImpl.findByCreditId(creditId);
     }
-    @PostMapping(value = "/{creditId}/payments", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<CreditDTO> addPayment(@PathVariable("creditId") String creditId,
+    @PostMapping(value = "/{id}/payments", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Mono<CreditDTO> addPayment(@PathVariable("id") String creditId,
                                       @RequestBody PaymentDTO paymentDTO) {
         return creditServiceImpl.addPayment(creditId, paymentDTO);
     }
-    @GetMapping(value = "/payments/{creditId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<PaymentDTO> getPaymentsByCreditId(@PathVariable ("creditId") String creditId) {
+    @GetMapping(value = "/payments/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<PaymentDTO> getPaymentsByCreditId(@PathVariable ("id") String creditId) {
         return creditServiceImpl.getPaymentsByCreditId(creditId);
     }
 }

@@ -24,13 +24,11 @@ import java.util.List;
 public  class Credit {
     @Id
     private String id;
-    @DBRef
     private Customer customerId;
     private String type;
     private BigDecimal amount;
     private BigDecimal interestRate;
     private BigDecimal remainingAmount;
     @Field("paymentReferences")
-    @DBRef
     private List<Payment> paymentReferences; // List of payment IDs
 }

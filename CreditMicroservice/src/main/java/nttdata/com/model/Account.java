@@ -26,7 +26,7 @@ import java.util.List;
 public class Account {
     @Id
     private String accountId;
-    private Customer customerId;
+    private String customerId;
     private String type;
     private BigDecimal balance;
     @Field("accountReferences")

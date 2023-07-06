@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 public interface CreditCardService {
 
     Mono<CreditCardDTO> createCreditCard(CreditCardDTO creditDTO);
-    Mono<CreditCardDTO> findByCreditCardId(String customerId);
+    Mono<CreditCardDTO> findByCreditCardId(String creditCardId);
 
     Mono<CreditCardDTO> addTransaction(String creditCardId, TransactionDTO transactionDTO);
 

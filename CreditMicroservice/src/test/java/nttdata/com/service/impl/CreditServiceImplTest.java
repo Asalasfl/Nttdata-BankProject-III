@@ -41,9 +41,9 @@ public class CreditServiceImplTest {
 
     @Test
     public void testCreateCredit() {
-        when(creditRepository.save(any(Credit.class))).thenReturn(generateCredit());
+        when(creditRepository.save(any(Credit.class))).thenReturn(generateCreditMono());
 
-        Mono<CreditDTO> credit = creditServiceImpl.createCredit(generateCredit());
+        Mono<CreditDTO> credit = creditServiceImpl.createCredit(generateCreditDTO());
     }
 
     @Test

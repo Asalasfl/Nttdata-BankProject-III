@@ -25,7 +25,6 @@ import java.util.List;
 public class Account {
     @Id
     private String id;
-    @DBRef
     private Customer customerId;
     private String type;
     private BigDecimal balance;

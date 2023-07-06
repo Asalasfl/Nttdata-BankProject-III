@@ -23,7 +23,7 @@ import java.util.List;
 public class CreditCard {
     @Id
     private String id;
-    private Customer customerId;
+    private String customerId;
     private String type;
     private BigDecimal creditLimit;
     private BigDecimal currentBalance;
