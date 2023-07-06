@@ -1,6 +1,7 @@
 package nttdata.com.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Flux;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,13 +27,11 @@ import java.util.List;
 public  class Credit {
     @Id
     private String id;
-    @DBRef
-    private Customer customerId;
+   // private Customer customerId;
     private String type;
     private BigDecimal amount;
     private BigDecimal interestRate;
     private BigDecimal remainingAmount;
     @Field("paymentReferences")
-    @DBRef
     private List<Payment> paymentReferences; // List of payment IDs
 }

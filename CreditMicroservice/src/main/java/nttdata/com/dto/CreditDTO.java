@@ -1,12 +1,9 @@
 package nttdata.com.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nttdata.com.deserializer.FluxDeserializer;
-import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,6 +14,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreditDTO {
     private String idCredit;
+   // private String idCustomer;
+    private String type;
     private BigDecimal amount;
     private BigDecimal interestRate;
     private BigDecimal remainingAmount;

@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -37,11 +37,6 @@ public class CreditServiceImpl implements CreditService {
         }
         credit.setPaymentReferences(payments);
 
-        if (credit.getId() == null) {
-            // Asignar un ID válido al crédito
-            credit.setId(generateCreditId());
-        }
-
         Mono<Credit> saveCreditMono = creditRepository.save(credit);
 
         Flux<Payment> savePaymentsFlux = Flux.fromIterable(payments)
@@ -57,39 +52,49 @@ public class CreditServiceImpl implements CreditService {
                 .map(CreditConverter::creditToDTO);
     }
 
-    private String generateCreditId() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
     @Override
     public Mono<CreditDTO> findByCreditId(String creditId) {
         return creditRepository.findById(creditId)
                 .map(CreditConverter::creditToDTO)
                 .switchIfEmpty(Mono.just(new CreditDTO("El crédito no existe.")));
     }
-
     @Override
     public Mono<CreditDTO> addPayment(String creditId, PaymentDTO paymentDTO) {
         return creditRepository.findById(creditId)
                 .flatMap(credit -> {
                     credit.setRemainingAmount(credit.getRemainingAmount().subtract(paymentDTO.getAmount()));
-                    Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO, CreditConverter.creditToDTO(credit));
 
-                    List<Payment> paymentReferences = credit.getPaymentReferences();
-                    paymentReferences.add(payment);
-                    credit.setPaymentReferences(paymentReferences);
+                    Payment payment = new Payment();
+                    payment.setId(paymentDTO.getIdPayment());
+                    payment.setAmount(paymentDTO.getAmount());
+                    payment.setTimestamp(paymentDTO.getTimestamp());
+                    payment.setCreditId(paymentDTO.getIdCredit());
+
+                    credit.getPaymentReferences().add(payment);
 
                     return creditRepository.save(credit)
-                            .map(CreditConverter::creditToDTO);
+                            .map(savedCredit -> {
+                                CreditDTO creditDTO = new CreditDTO();
+                                creditDTO.setIdCredit(savedCredit.getId());
+                                creditDTO.setType(savedCredit.getType());
+                                creditDTO.setAmount(savedCredit.getAmount());
+                                creditDTO.setInterestRate(savedCredit.getInterestRate());
+                                creditDTO.setRemainingAmount(savedCredit.getRemainingAmount());
+                                creditDTO.setPayments(savedCredit.getPaymentReferences().stream()
+                                        .map(payment1 -> PaymentConverter.paymentToPaymentDTO(payment, savedCredit)) // Pasar savedCredit como segundo argumento
+                                        .collect(Collectors.toList()));
+                                return creditDTO;
+                            });
                 });
     }
 
 
     @Override
     public Flux<PaymentDTO> getPaymentsByCreditId(String creditId) {
-        return (Flux<PaymentDTO>) paymentRepository.findByCreditId(creditId)
-                .map(PaymentConverter::paymentToPaymentDTO);
+        return paymentRepository.findByCreditId(creditId)
+                .flatMap(payment -> creditRepository.findById(creditId)
+                        .map(credit -> PaymentConverter.paymentToPaymentDTO(payment, credit))); // Pasar credit como segundo argumento
     }
+
 
 }

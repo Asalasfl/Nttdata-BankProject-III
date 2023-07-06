@@ -23,12 +23,10 @@ import java.util.List;
 public class CreditCard {
     @Id
     private String id;
-    @DBRef
     private Customer customerId;
     private String type;
     private BigDecimal creditLimit;
     private BigDecimal currentBalance;
     @Field("transactionReferences")
-    @DBRef
     private List<Transaction> transactionReferences; // List of transaction IDs
 }

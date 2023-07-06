@@ -30,6 +30,5 @@ public class Account {
     private String type;
     private BigDecimal balance;
     @Field("accountReferences")
-    @DBRef
     private List<Transaction> accountReferences;
 }

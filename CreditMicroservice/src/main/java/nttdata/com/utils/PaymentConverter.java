@@ -5,29 +5,13 @@ import nttdata.com.dto.PaymentDTO;
 import nttdata.com.model.Credit;
 import nttdata.com.model.Payment;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class PaymentConverter {
 
-    /*
-    public static List<PaymentDTO> paymentListToPaymentListDTO(List<Payment> entity) {
-        return entity.stream()
-                .map(payment -> {
-                    PaymentDTO dto = new PaymentDTO();
-                    dto.setIdPayment(payment.getId());
-                    dto.setAmount(payment.getAmount());
-                    dto.setTimestamp(payment.getTimestamp());
-                    return dto;
-                })
-                .collect(Collectors.toList());
-    }
-    */
-    public static PaymentDTO paymentToPaymentDTO(Payment entity) {
+    public static PaymentDTO paymentToPaymentDTO(Payment entity, Credit credit) {
         PaymentDTO dto = new PaymentDTO();
         dto.setIdPayment(entity.getId());
         dto.setAmount(entity.getAmount());
-        dto.setIdCredit(entity.getCreditId().getId());
+        dto.setIdCredit(entity.getCreditId());
         dto.setTimestamp(entity.getTimestamp());
 
         return dto;
@@ -38,7 +22,7 @@ public class PaymentConverter {
         entity.setAmount(dto.getAmount());
         entity.setTimestamp(dto.getTimestamp());
         Credit creditEntity = CreditConverter.DTOToCredit(creditDTO);
-        entity.setCreditId(creditEntity);
+        entity.setCreditId(dto.getIdCredit());
         return entity;
     }
 }

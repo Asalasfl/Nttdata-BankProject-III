@@ -34,9 +34,8 @@ public class CreditController {
                                       @RequestBody PaymentDTO paymentDTO) {
         return creditServiceImpl.addPayment(creditId, paymentDTO);
     }
-
-    @GetMapping(value = "/{creditId}/payments", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<PaymentDTO> getPaymentsByCreditId(@PathVariable String creditId) {
+    @GetMapping(value = "/payments/{creditId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<PaymentDTO> getPaymentsByCreditId(@PathVariable ("creditId") String creditId) {
         return creditServiceImpl.getPaymentsByCreditId(creditId);
     }
 }
