@@ -31,15 +31,20 @@ public class CreditServiceImpl implements CreditService {
         Credit credit = CreditConverter.DTOToCredit(creditDTO);
 
         List<Payment> payments = new ArrayList<>();
+        BigDecimal totalPaymentAmount = BigDecimal.ZERO; // Variable para almacenar la suma de los montos de los pagos
+
         if (creditDTO.getPayments() != null) {
             for (PaymentDTO paymentDTO : creditDTO.getPayments()) {
                 Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO);
                 payments.add(payment);
+                totalPaymentAmount = totalPaymentAmount.add(payment.getAmount()); // Sumar el monto del pago al totalPaymentAmount
             }
         }
+
         credit.setPaymentReferences(payments);
         credit.setInterestRate(BigDecimal.valueOf(0.005));
-        credit.setRemainingAmount(credit.getInterestRate().multiply(credit.getAmount()));
+        credit.setRemainingAmount(credit.getAmount().add(credit.getAmount().multiply(credit.getInterestRate())).subtract(totalPaymentAmount)); // Restar el totalPaymentAmount del remainingAmount
+
         Mono<Credit> saveCreditMono = creditRepository.save(credit);
 
         Flux<Payment> savePaymentsFlux = Flux.fromIterable(payments)
@@ -54,6 +59,7 @@ public class CreditServiceImpl implements CreditService {
                 })
                 .map(CreditConverter::creditToDTO);
     }
+
 
     @Override
     public Mono<CreditDTO> findByCreditId(String creditId) {
