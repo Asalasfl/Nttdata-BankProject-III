@@ -2,14 +2,11 @@ package nttdata.com.service.impl;
 
 import lombok.AllArgsConstructor;
 import nttdata.com.dto.*;
-import nttdata.com.client.feign.CreditCardClient;
-import nttdata.com.client.feign.CreditClient;
 import nttdata.com.model.*;
 import nttdata.com.repository.AccountRepository;
 import nttdata.com.repository.CustomerRepository;
 import nttdata.com.service.CustomerService;
 import nttdata.com.utils.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,10 +21,7 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
-    @Autowired
-    private CreditClient creditClient;
-    @Autowired
-    private CreditCardClient creditCardClient;
+
 
     @Override
     public Mono<CustomerDTO> createCustomer(CustomerDTO customerDTO) {

@@ -90,24 +90,11 @@
     <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.25" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-metadata:2.0.0.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: com.playtika.reactivefeign:feign-reactor-spring-configuration:3.2.6" level="project" />
-    <orderEntry type="library" name="Maven: com.playtika.reactivefeign:feign-reactor-core:3.2.6" level="project" />
-    <orderEntry type="library" name="Maven: io.github.openfeign:feign-core:11.8" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-commons:3.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.7.6" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-context:3.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-openfeign-core:3.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-aop:2.7.8" level="project" />
-    <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.9.7" level="project" />
-    <orderEntry type="library" name="Maven: io.github.openfeign.form:feign-form-spring:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: io.github.openfeign.form:feign-form:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.4" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.2" level="project" />
-    <orderEntry type="library" name="Maven: com.playtika.reactivefeign:feign-reactor-cloud:3.2.6" level="project" />
-    <orderEntry type="library" name="Maven: com.playtika.reactivefeign:feign-reactor-webclient:3.2.6" level="project" />
-    <orderEntry type="library" name="Maven: com.playtika.reactivefeign:feign-reactor-webclient-core:3.2.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter:3.1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-context:3.1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.7.6" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-commons:3.1.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-rsa:1.0.11.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.69" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.69" level="project" />

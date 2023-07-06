@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nttdata.com.dto.CreditDTO;
 import nttdata.com.dto.PaymentDTO;
+import nttdata.com.feign.CustomerClient;
 import nttdata.com.model.Credit;
 import nttdata.com.model.Payment;
 import nttdata.com.repository.CreditRepository;
@@ -11,6 +12,7 @@ import nttdata.com.repository.PaymentRepository;
 import nttdata.com.service.CreditService;
 import nttdata.com.utils.CreditConverter;
 import nttdata.com.utils.PaymentConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,37 +20,40 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 @Slf4j
 @AllArgsConstructor
 @Service
 public class CreditServiceImpl implements CreditService {
     private final CreditRepository creditRepository;
     private final PaymentRepository paymentRepository;
-
+    @Autowired
+    private CustomerClient customerClient;
     @Override
     public Mono<CreditDTO> createCredit(CreditDTO creditDTO) {
-        Credit credit = CreditConverter.DTOToCredit(creditDTO);
 
-        List<Payment> payments = new ArrayList<>();
-        BigDecimal totalPaymentAmount = BigDecimal.ZERO; // Variable para almacenar la suma de los montos de los pagos
+            Credit credit = CreditConverter.DTOToCredit(creditDTO);
+            credit.setCustomerId(String.valueOf(customerClient.getCustomerById(credit.getCustomerId())));
+            List<Payment> payments = new ArrayList<>();
+            BigDecimal totalPaymentAmount = BigDecimal.ZERO; // Variable para almacenar la suma de los montos de los pagos
 
-        if (creditDTO.getPayments() != null) {
-            for (PaymentDTO paymentDTO : creditDTO.getPayments()) {
-                Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO);
-                payments.add(payment);
-                totalPaymentAmount = totalPaymentAmount.add(payment.getAmount()); // Sumar el monto del pago al totalPaymentAmount
+            if (creditDTO.getPayments() != null) {
+                for (PaymentDTO paymentDTO : creditDTO.getPayments()) {
+                    Payment payment = PaymentConverter.paymentDTOToPayment(paymentDTO);
+                    payments.add(payment);
+                    totalPaymentAmount = totalPaymentAmount.add(payment.getAmount()); // Sumar el monto del pago al totalPaymentAmount
+                }
             }
-        }
 
-        credit.setPaymentReferences(payments);
-        credit.setInterestRate(BigDecimal.valueOf(0.005));
-        credit.setRemainingAmount(credit.getAmount().add(credit.getAmount().multiply(credit.getInterestRate())).subtract(totalPaymentAmount)); // Restar el totalPaymentAmount del remainingAmount
 
-        Mono<Credit> saveCreditMono = creditRepository.save(credit);
+            credit.setPaymentReferences(payments);
+            credit.setInterestRate(BigDecimal.valueOf(0.005));
+            credit.setRemainingAmount(credit.getAmount().add(credit.getAmount().multiply(credit.getInterestRate())).subtract(totalPaymentAmount)); // Restar el totalPaymentAmount del remainingAmount
 
-        Flux<Payment> savePaymentsFlux = Flux.fromIterable(payments)
-                .flatMap(paymentRepository::save);
+            Mono<Credit> saveCreditMono = creditRepository.save(credit);
+
+            Flux<Payment> savePaymentsFlux = Flux.fromIterable(payments)
+                    .flatMap(paymentRepository::save);
 
         return saveCreditMono
                 .thenMany(savePaymentsFlux)
@@ -59,7 +64,6 @@ public class CreditServiceImpl implements CreditService {
                 })
                 .map(CreditConverter::creditToDTO);
     }
-
 
     @Override
     public Mono<CreditDTO> findByCreditId(String creditId) {

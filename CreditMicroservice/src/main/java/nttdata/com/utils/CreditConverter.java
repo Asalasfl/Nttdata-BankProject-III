@@ -8,10 +8,6 @@ import nttdata.com.model.Payment;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nttdata.com.utils.PaymentConverter.paymentToPaymentDTO;
-
-
-
 
 public class CreditConverter {
 
@@ -42,7 +38,6 @@ public class CreditConverter {
         entity.setType(dto.getType());
         entity.setAmount(dto.getAmount());
         entity.setCustomerId(dto.getIdCustomer());
-
         List<Payment> paymentReferences = new ArrayList<>();
         if (dto.getPayments() != null) {
             for (PaymentDTO paymentDTO : dto.getPayments()) {
