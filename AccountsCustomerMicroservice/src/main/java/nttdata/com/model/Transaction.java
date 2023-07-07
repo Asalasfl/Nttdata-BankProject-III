@@ -18,7 +18,7 @@ public class Transaction {
     @Id
     private String id;
     @DBRef
-    private Account accountId;
+    private String accountId;
     @DBRef
     private CreditCard creditCardId;
     private String type; // "DEPOSIT" or "WITHDRAWAL"

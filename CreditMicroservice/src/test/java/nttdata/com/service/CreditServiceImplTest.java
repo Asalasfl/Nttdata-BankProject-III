@@ -1,4 +1,4 @@
-package nttdata.com.service.impl;
+package nttdata.com.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

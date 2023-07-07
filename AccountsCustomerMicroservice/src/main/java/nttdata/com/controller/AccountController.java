@@ -5,7 +5,7 @@ import nttdata.com.dto.AccountDTO;
 import nttdata.com.dto.CreditCardDTO;
 import nttdata.com.dto.TransactionDTO;
 import nttdata.com.model.CreditCard;
-import nttdata.com.service.impl.AccountServiceImpl;
+import nttdata.com.service.AccountServiceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

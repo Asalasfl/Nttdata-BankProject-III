@@ -13,19 +13,18 @@ public class TransactionConverter {
         dto.setTransactionId(entity.getId());
         dto.setType(entity.getType());
         dto.setAmount(entity.getAmount());
-        dto.setIdCreditCard(entity.getCreditCardId().getId());
+        dto.setIdCreditCard(entity.getCreditCardId());
         dto.setTimestamp(entity.getTimestamp());
 
         return dto;
     }
-    public static Transaction transactionDTOToTransaction(TransactionDTO dto, CreditCardDTO creditCardDTO) {
+    public static Transaction transactionDTOToTransaction(TransactionDTO dto) {
         Transaction entity = new Transaction();
         entity.setId(dto.getTransactionId());
         entity.setType(dto.getType());
         entity.setAmount(dto.getAmount());
         entity.setTimestamp(dto.getTimestamp());
-        CreditCard creditCardEntity = CreditCardConverter.DTOToCreditCard(creditCardDTO);
-        entity.setCreditCardId(creditCardEntity);
+        entity.setCreditCardId(dto.getIdCreditCard());
 
         return entity;
     }

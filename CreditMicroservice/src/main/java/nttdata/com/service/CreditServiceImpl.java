@@ -1,4 +1,4 @@
-package nttdata.com.service.impl;
+package nttdata.com.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

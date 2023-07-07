@@ -35,7 +35,7 @@ public class CreditCardServiceImpl implements CreditCardService {
         List<Transaction> transactions = new ArrayList<>();
         if (creditCardDTO.getTransactions() != null) {
             for (TransactionDTO transactionDTO : creditCardDTO.getTransactions()) {
-                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO, creditCardDTO);
+                Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO);
                 transactions.add(transaction);
             }
         }
@@ -75,7 +75,7 @@ public class CreditCardServiceImpl implements CreditCardService {
         return creditCardRepository.findById(creditCardId)
                 .flatMap(creditCard -> {
                     creditCard.setCurrentBalance(creditCard.getCurrentBalance().add(transactionDTO.getAmount()));
-                    Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO,CreditCardConverter.creditCardToDTO(creditCard));
+                    Transaction transaction = TransactionConverter.transactionDTOToTransaction(transactionDTO);
 
                     List<Transaction> transactionReferences = creditCard.getTransactionReferences();
                     transactionReferences.add(transaction);

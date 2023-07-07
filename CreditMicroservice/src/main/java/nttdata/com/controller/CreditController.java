@@ -3,7 +3,7 @@ package nttdata.com.controller;
 import lombok.AllArgsConstructor;
 import nttdata.com.dto.CreditDTO;
 import nttdata.com.dto.PaymentDTO;
-import nttdata.com.service.impl.CreditServiceImpl;
+import nttdata.com.service.CreditServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

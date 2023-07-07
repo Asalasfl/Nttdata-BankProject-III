@@ -1,10 +1,9 @@
-package nttdata.com.service.impl;
+package nttdata.com.service;
 
 import lombok.AllArgsConstructor;
 import nttdata.com.dto.AccountDTO;
 import nttdata.com.dto.CreditCardDTO;
 import nttdata.com.dto.TransactionDTO;
-import nttdata.com.model.Account;
 import nttdata.com.model.CreditCard;
 import nttdata.com.model.Transaction;
 import nttdata.com.repository.AccountRepository;
@@ -17,10 +16,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor

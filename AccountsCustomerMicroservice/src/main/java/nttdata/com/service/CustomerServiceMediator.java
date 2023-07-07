@@ -1,13 +1,9 @@
-package nttdata.com.service.impl;
+package nttdata.com.service;
 
 import lombok.AllArgsConstructor;
 import nttdata.com.dto.AccountDTO;
-import nttdata.com.dto.CustomerDTO;
-import nttdata.com.model.Account;
 import nttdata.com.service.AccountService;
 import nttdata.com.service.CustomerService;
-import nttdata.com.utils.AccountConverter;
-import nttdata.com.utils.CustomerConverter;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 @AllArgsConstructor

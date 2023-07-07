@@ -27,7 +27,7 @@ public class Account {
     @Id
     private String id;
     @DBRef
-    private Customer customerId;
+    private String customerId;
     private String type;
     private BigDecimal balance;
     private boolean commissionFree;
